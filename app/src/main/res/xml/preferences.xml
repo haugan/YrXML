@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:key="pref_cat_settings"
+        android:title="@string/cat_pref">
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_default"
+            android:key="pref_key_1"
+            android:summary="@string/pref_summary"
+            android:title="@string/pref_title" />
+        <Preference
+            android:defaultValue="@string/pref_default"
+            android:dependency="pref_key_1"
+            android:key="pref_key_2"
+            android:summary="@string/check_summary"
+            android:title="@string/check_title" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="pref_cat_contact"
+        android:title="@string/cat_contact">
+        <Preference
+            android:title="@string/contact_title">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://yrkundesenter.zendesk.com/hc/no/requests/new" />
+        </Preference>
+    </PreferenceCategory>
+
+</PreferenceScreen>
