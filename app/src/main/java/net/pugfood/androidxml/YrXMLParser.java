@@ -162,6 +162,20 @@ public class YrXMLParser {
                     }
                 }
 
+            } else if (tag.equals("meta")) {
+
+                while (xpp.next() != END_TAG) {
+                    if(xpp.getEventType() != START_TAG) {
+                        continue;
+                    }
+                    tag = xpp.getName();
+                    if (tag.equals("lastupdate")) {
+                        weatherData.lastUpdate = readText(xpp);
+                    } else {
+                        skip(xpp);
+                    }
+                }
+
             } else if (tag.equals("forecast")) {
 
                 while (xpp.next() != END_TAG) {

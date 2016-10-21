@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,6 +16,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import net.pugfood.androidxml.model.WeatherData;
@@ -42,11 +42,12 @@ public class MainActivity extends AppCompatActivity {
     private EditText editKommune = null;
     private EditText editSted    = null;
 
+    private ProgressBar progBar = null;
     private ImageView imgView = null;
     private int imgResourceID;
 
     private final String TEXT_ENCODING = "utf-8";
-    private final String DEBUG_TAG = "haugis";
+    private final String CON_SERV = Context.CONNECTIVITY_SERVICE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         editFylke   = (EditText) findViewById(R.id.editFylke);
         editKommune = (EditText) findViewById(R.id.editKommune);
         editSted    = (EditText) findViewById(R.id.editSted);
+        progBar     = (ProgressBar) findViewById(R.id.progressBar);
         imgView     = (ImageView) findViewById(R.id.imageView);
 
         webserviceUrl = new StringBuilder();
@@ -89,8 +91,7 @@ public class MainActivity extends AppCompatActivity {
      * @param view
      */
     public void clickHandler(View view) {
-        ConnectivityManager conMan = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager conMan = (ConnectivityManager) getSystemService(CON_SERV);
         NetworkInfo netInfo = conMan.getActiveNetworkInfo();
 
         if (netInfo != null && netInfo.isConnected()) {
@@ -103,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
                          .append(fylke).append("/")
                          .append(kommune).append("/")
                          .append(sted).append("/varsel.xml");
+
+            // Show progress bar.
+            progBar.setVisibility(View.VISIBLE);
 
             // Fetch the XML data with user input variables.
             new DownloadXMLTask().execute(webserviceUrl.toString());
@@ -185,11 +189,11 @@ public class MainActivity extends AppCompatActivity {
             WebSettings settings = webView.getSettings();
             settings.setDefaultTextEncodingName(TEXT_ENCODING);
 
-            // Display result and correct weather symbol in UI.
-            Log.d("haugis", "imgResourceID: " + imgResourceID);
-
             imgView.setImageResource(imgResourceID);
             webView.loadData(result, "text/html; charset=utf-8", TEXT_ENCODING);
+
+            // Hide progressbar.
+            progBar.setVisibility(View.INVISIBLE);
         }
 
     }
@@ -226,18 +230,28 @@ public class MainActivity extends AppCompatActivity {
                     .append(w.locationName)
                     .append("</h1>");
 
-            // Weekday: weather description, (temperature)
+            // Weekday: weather description, (temperature) - Windspeed.
             htmlString
                     .append("<h4>")
                     .append(w.weekday.toUpperCase()).append(": ")
                     .append(w.symbolName).append(", ")
-                    .append(w.temperatureValue).append("&deg;C")
+                    .append(w.temperatureValue).append("&deg;C").append(" - ")
+                    .append(w.windSpeedMps).append(" mps vind.")
                     .append("</h4>");
+
 
             // Weather forecast summary
             htmlString
                     .append("<p  style='clear:both'>")
                     .append(w.forecastText)
+                    .append("</p>");
+
+            // Last updated
+            String[] split = w.lastUpdate.split("T");
+            htmlString
+                    .append("<p> Sist oppdatert: ")
+                    .append(split[0]).append(" kl ")
+                    .append(split[1])
                     .append("</p>");
 
             // Append prefix "i" before symbol variable from XML file to get correct weather img.

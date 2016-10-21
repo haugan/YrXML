@@ -42,6 +42,7 @@
         android:layout_below="@+id/editKommune"
         android:ems="10"
         android:hint="Sted"
+        android:imeOptions="actionDone"
         android:inputType="textPostalAddress" />
 
     <Button
@@ -54,22 +55,32 @@
         android:onClick="clickHandler"
         android:text="SJEKK VÆRET" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="32dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        app:srcCompat="@android:color/background_light" />
-
     <WebView
         android:id="@+id/webview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/imageView"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/btnSjekk"></WebView>
+        android:layout_below="@+id/btnSjekk" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        app:srcCompat="@android:color/background_light" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnSjekk"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="150dp"
+        android:visibility="invisible" />
 
 </RelativeLayout>
